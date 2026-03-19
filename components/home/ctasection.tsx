@@ -3,9 +3,9 @@ import "./ctasection.css";
 
 export default function CTASection() {
   return (
-    <section className="cta-section">
-      <div className="cta-container">
-        <p className="cta-tag">Join the Community</p>
+    <section className="cta-section section">
+      <div className="cta-container container">
+        <p className="cta-tag section-tag">Join the Community</p>
         <h2>Support Handmade. Share Creativity. Shop with Purpose.</h2>
         <p className="cta-text">
           Whether you are looking for one-of-a-kind handcrafted goods or want
@@ -14,10 +14,10 @@ export default function CTASection() {
         </p>
 
         <div className="cta-buttons">
-          <Link href="/shop" className="cta-button primary">
+          <Link href="/shop" className="btn btn-primary">
             Start Shopping
           </Link>
-          <Link href="/signup" className="cta-button secondary">
+          <Link href="/signup" className="btn btn-light">
             Become a Seller
           </Link>
         </div>

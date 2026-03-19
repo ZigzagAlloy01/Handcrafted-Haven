@@ -2,10 +2,10 @@ import "./aboutsection.css";
 
 export default function AboutSection() {
   return (
-    <section className="about-section">
-      <div className="about-container">
+    <section className="section">
+      <div className="about-container container">
         <div className="about-content">
-          <p className="about-tag">About Handcrafted Haven</p>
+          <p className="section-tag">About Handcrafted Haven</p>
           <h2>A Marketplace Built for Creativity and Community</h2>
           <p className="about-text">
             Handcrafted Haven is a digital space where artisans can share their
@@ -20,7 +20,7 @@ export default function AboutSection() {
         </div>
 
         <div className="about-highlight">
-          <div className="highlight-box">
+          <div className="highlight-box card">
             <h3>Why It Matters</h3>
             <p>
               Every handmade item carries the story, care, and individuality of

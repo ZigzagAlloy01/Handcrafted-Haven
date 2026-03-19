@@ -7,6 +7,7 @@ import AboutSection from "@/components/home/aboutsection";
 import CTASection from "@/components/home/ctasection";
 import type { Metadata } from "next";
 
+
 export const metadata: Metadata = {
   title: "Handcrafted Haven | Home",
   description:

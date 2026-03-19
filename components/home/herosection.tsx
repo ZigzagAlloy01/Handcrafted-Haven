@@ -4,8 +4,8 @@ import "./herosection.css";
 export default function HeroSection() {
   return (
     <section className="hero">
-      <div className="hero-content">
-        <p className="hero-tag">Handmade with heart</p>
+      <div className="hero-content container">
+        <p className="hero-tag section-tag">Handmade with heart</p>
         <h1>Discover Unique Creations from Local Artisans</h1>
         <p className="hero-text">
           Handcrafted Haven connects talented makers with people who value
@@ -14,10 +14,10 @@ export default function HeroSection() {
         </p>
 
         <div className="hero-buttons">
-          <Link href="/shop" className="hero-btn primary">
+          <Link href="/shop" className="btn btn-primary">
             Shop Now
           </Link>
-          <Link href="/artisans" className="hero-btn secondary">
+          <Link href="/artisans" className="btn btn-secondary">
             Meet the Artisans
           </Link>
         </div>

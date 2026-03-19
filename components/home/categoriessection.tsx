@@ -25,9 +25,9 @@ const categories = [
 
 export default function CategoriesSection() {
   return (
-    <section className="categories-section">
-      <div className="categories-container">
-        <p className="categories-tag">Shop by Category</p>
+    <section className="categories-section section">
+      <div className="categories-container container">
+        <p className="section-tag">Shop by Category</p>
         <h2>Browse Handmade Collections</h2>
         <p className="categories-text">
           Discover curated categories filled with unique products made by
@@ -36,10 +36,10 @@ export default function CategoriesSection() {
 
         <div className="categories-grid">
           {categories.map((category) => (
-            <article key={category.id} className="category-card">
+            <article key={category.id} className="category-card card">
               <h3>{category.title}</h3>
               <p>{category.text}</p>
-              <button className="category-button">Explore</button>
+              <button className="btn btn-primary">Explore</button>
             </article>
           ))}
         </div>

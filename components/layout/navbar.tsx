@@ -9,7 +9,7 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="navbar-container">
+      <div className="navbar-container container">
         <Link href="/" className="navbar-logo">
           Handcrafted Haven
         </Link>
@@ -24,9 +24,6 @@ export default function Navbar() {
         </button>
 
         <nav className={`navbar-menu ${menuOpen ? "active" : ""}`}>
-          <Link href="/" onClick={() => setMenuOpen(false)}>
-            Home
-          </Link>
           <Link href="/shop" onClick={() => setMenuOpen(false)}>
             Shop
           </Link>
@@ -39,7 +36,11 @@ export default function Navbar() {
           <Link href="/contact" onClick={() => setMenuOpen(false)}>
             Contact
           </Link>
-          <Link href="/login" className="navbar-login" onClick={() => setMenuOpen(false)}>
+          <Link
+            href="/login"
+            className="navbar-login"
+            onClick={() => setMenuOpen(false)}
+          >
             Login
           </Link>
         </nav>

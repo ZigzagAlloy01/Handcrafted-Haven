@@ -23,8 +23,8 @@ const products = [
 
 export default function FeaturedProducts() {
   return (
-    <section className="featured-products">
-      <div className="featured-products-container">
+    <section className="section">
+      <div className="featured-products-container container">
         <p className="section-tag">Featured Collection</p>
         <h2>Handpicked Favorites</h2>
         <p className="section-text">
@@ -34,14 +34,14 @@ export default function FeaturedProducts() {
 
         <div className="product-grid">
           {products.map((product) => (
-            <article key={product.id} className="product-card">
+            <article key={product.id} className="product-card card">
               <div className="product-image-placeholder">
                 <span>Product Image</span>
               </div>
               <h3>{product.name}</h3>
               <p className="product-price">{product.price}</p>
               <p className="product-description">{product.description}</p>
-              <button className="product-button">View Details</button>
+              <button className="btn btn-secondary">View Details</button>
             </article>
           ))}
         </div>
