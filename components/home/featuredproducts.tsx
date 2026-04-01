@@ -19,7 +19,7 @@ export default function FeaturedProducts() {
 
     const featured = [...normalized]
       .sort((a, b) => b.rating - a.rating)
-      .slice(0, 2);
+      .slice(0, 3);
 
     setProducts(featured);
   }
