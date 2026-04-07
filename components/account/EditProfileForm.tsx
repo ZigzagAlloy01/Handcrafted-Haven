@@ -13,6 +13,8 @@ export default function EditProfileForm({ user }: { user: User }) {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
+  const isArtisan = user.role === 'artisan'
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError('')
@@ -38,7 +40,9 @@ export default function EditProfileForm({ user }: { user: User }) {
           <div className={`card ${styles.card}`}>
             <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.field}>
-                <label htmlFor="first_name" className={styles.label}>First Name</label>
+                <label htmlFor="first_name" className={styles.label}>
+                  First Name
+                </label>
                 <input
                   id="first_name"
                   name="first_name"
@@ -50,7 +54,9 @@ export default function EditProfileForm({ user }: { user: User }) {
               </div>
 
               <div className={styles.field}>
-                <label htmlFor="last_name" className={styles.label}>Last Name</label>
+                <label htmlFor="last_name" className={styles.label}>
+                  Last Name
+                </label>
                 <input
                   id="last_name"
                   name="last_name"
@@ -62,19 +68,23 @@ export default function EditProfileForm({ user }: { user: User }) {
               </div>
 
               <div className={styles.field}>
-                <label htmlFor="email" className={styles.label}>Email</label>
+                <label htmlFor="address" className={styles.label}>
+                  Address
+                </label>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  defaultValue={user.email}
+                  id="address"
+                  name="address"
+                  type="text"
+                  defaultValue={user.address ?? ''}
+                  placeholder="Enter your address"
                   className={styles.input}
-                  required
                 />
               </div>
 
               <div className={styles.field}>
-                <label htmlFor="avatar_url" className={styles.label}>Avatar URL</label>
+                <label htmlFor="avatar_url" className={styles.label}>
+                  Avatar URL
+                </label>
                 <input
                   id="avatar_url"
                   name="avatar_url"
@@ -84,6 +94,38 @@ export default function EditProfileForm({ user }: { user: User }) {
                   className={styles.input}
                 />
               </div>
+
+              {isArtisan && (
+                <>
+                  <div className={styles.field}>
+                    <label htmlFor="shop_name" className={styles.label}>
+                      Shop Name
+                    </label>
+                    <input
+                      id="shop_name"
+                      name="shop_name"
+                      type="text"
+                      defaultValue={user.shop_name ?? ''}
+                      placeholder="Enter your shop name"
+                      className={styles.input}
+                    />
+                  </div>
+
+                  <div className={styles.field}>
+                    <label htmlFor="description" className={styles.label}>
+                      Description
+                    </label>
+                    <textarea
+                      id="description"
+                      name="description"
+                      defaultValue={user.description ?? ''}
+                      placeholder="Tell customers about yourself or your shop..."
+                      className={styles.textarea}
+                      rows={5}
+                    />
+                  </div>
+                </>
+              )}
 
               {error && <p className={styles.error}>{error}</p>}
               {success && <p className={styles.success}>{success}</p>}

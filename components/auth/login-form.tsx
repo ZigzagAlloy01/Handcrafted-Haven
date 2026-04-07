@@ -8,7 +8,7 @@ import styles from './login-form.module.css';
 
 export default function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -38,10 +38,34 @@ export default function LoginForm() {
     setLoading(true);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      setError(error.message);
+    let emailToUse = identifier.trim();
+
+    const isEmail = emailToUse.includes('@');
+
+    if (!isEmail) {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .ilike('username', emailToUse)
+        .single();
+
+      if (profileError || !profile?.email) {
+        setError('Invalid username or password.');
+        setLoading(false);
+        return;
+      }
+
+      emailToUse = profile.email;
+    }
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: emailToUse,
+      password,
+    });
+
+    if (signInError) {
+      setError('Invalid email/username or password.');
       setLoading(false);
       return;
     }
@@ -58,10 +82,10 @@ export default function LoginForm() {
             <form onSubmit={handleSubmit} className={styles.form}>
               <input
                 className={styles.input}
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+                type="text"
+                placeholder="Email or username"
+                value={identifier}
+                onChange={e => setIdentifier(e.target.value)}
                 required
               />
 

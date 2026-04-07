@@ -9,15 +9,18 @@
 }
 
 .artisan-profile-card {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 48px;
   background: #ffffff;
   border: 1px solid #e7dfd6;
   border-radius: 24px;
   padding: 40px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.artisan-profile-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 48px;
 }
 
 .artisan-profile-details {
@@ -52,7 +55,8 @@
   margin-top: 28px;
 }
 
-.artisan-profile-section h2 {
+.artisan-profile-section h2,
+.artisan-profile-products-title {
   margin: 0 0 10px;
   font-size: 14px;
   font-weight: 700;
@@ -61,7 +65,8 @@
   color: #9b8777;
 }
 
-.artisan-profile-section p {
+.artisan-profile-section p,
+.artisan-profile-products-empty {
   margin: 0;
   font-size: 16px;
   line-height: 1.8;
@@ -79,87 +84,36 @@
   box-shadow: 0 4px 10px rgba(111, 78, 55, 0.06);
 }
 
-.artisan-profile-image {
-  display: block;
-  width: 340px;
-  height: 340px;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
+.artisan-profile-image,
 .artisan-profile-no-image {
   width: 340px;
   height: 340px;
+  border-radius: 50%;
+}
+
+.artisan-profile-image {
+  display: block;
+  object-fit: cover;
+}
+
+.artisan-profile-no-image {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
   background: #f1ece6;
   color: #9b8777;
   font-size: 16px;
 }
 
-@media (max-width: 900px) {
-  .artisan-profile-card {
-    flex-direction: column-reverse;
-    align-items: center;
-    gap: 28px;
-    padding: 28px;
-  }
-
-  .artisan-profile-details {
-    width: 100%;
-  }
-
-  .artisan-profile-image {
-    width: 260px;
-    height: 260px;
-  }
-
-  .artisan-profile-no-image {
-    width: 260px;
-    height: 260px;
-  }
-
-  .artisan-profile-name {
-    font-size: 34px;
-  }
+.artisan-profile-products {
+  margin-top: 36px;
 }
 
-@media (max-width: 640px) {
-  .artisan-profile-page {
-    padding: 32px 16px 48px;
-  }
-
-  .artisan-profile-card {
-    padding: 20px;
-    border-radius: 18px;
-    gap: 22px;
-  }
-
-  .artisan-profile-image {
-    width: 200px;
-    height: 200px;
-  }
-
-  .artisan-profile-no-image {
-    width: 200px;
-    height: 200px;
-    font-size: 14px;
-  }
-
-  .artisan-profile-name {
-    font-size: 28px;
-  }
-
-  .artisan-profile-shop {
-    font-size: 18px;
-  }
-
-  .artisan-profile-section p {
-    font-size: 15px;
-    line-height: 1.7;
-  }
+.artisan-products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 16px;
 }
 
 .artisan-profile-skeleton-card {
@@ -229,4 +183,89 @@
   100% {
     background-position: -200% 0;
   }
+}
+
+@media (max-width: 1100px) {
+  .artisan-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .artisan-profile-card {
+    padding: 28px;
+  }
+
+  .artisan-profile-top {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .artisan-profile-details {
+    width: 100%;
+  }
+
+  .artisan-profile-image,
+  .artisan-profile-no-image {
+    width: 260px;
+    height: 260px;
+  }
+
+  .artisan-profile-name {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 700px) {
+  .artisan-products-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .artisan-profile-page {
+    padding: 32px 16px 48px;
+  }
+
+  .artisan-profile-card {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .artisan-profile-top {
+    gap: 22px;
+  }
+
+  .artisan-profile-image,
+  .artisan-profile-no-image {
+    width: 200px;
+    height: 200px;
+  }
+
+  .artisan-profile-no-image {
+    font-size: 14px;
+  }
+
+  .artisan-profile-name {
+    font-size: 28px;
+  }
+
+  .artisan-profile-shop {
+    font-size: 18px;
+  }
+
+  .artisan-profile-section p,
+  .artisan-profile-products-empty {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+}
+
+.artisan-profile-skeleton-avatar {
+  width: 320px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: #e7dfd6;
+  flex-shrink: 0;
 }

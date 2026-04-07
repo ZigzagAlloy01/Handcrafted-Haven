@@ -28,7 +28,9 @@ export default function ProfileCard({ user }: { user: User }) {
             </div>
 
             <div className={styles.info}>
-              <h2 className={styles.name}>{user.first_name} {user.last_name}</h2>
+              <h2 className={styles.name}>
+                {user.first_name} {user.last_name}
+              </h2>
               <p className={styles.email}>{user.email}</p>
               <span className={`${styles.badge} ${styles[user.role]}`}>
                 {user.role === 'artisan' ? 'Artisan' : 'Buyer'}
@@ -41,9 +43,21 @@ export default function ProfileCard({ user }: { user: User }) {
               </Link>
 
               {user.role === 'artisan' && (
-                <Link href={ROUTES.ARTISAN_PROFILE(user.id)} className="btn btn-secondary">
-                  View My Storefront
-                </Link>
+                <>
+                  <Link
+                    href={ROUTES.ARTISAN_PROFILE(user.id)}
+                    className="btn btn-secondary"
+                  >
+                    View My Storefront
+                  </Link>
+
+                  <Link
+                    href={ROUTES.ARTISAN_MANAGE(user.id)}
+                    className={`btn ${styles.storeEdit}`}
+                  >
+                    Edit Storefront
+                  </Link>
+                </>
               )}
             </div>
           </div>

@@ -1,0 +1,128 @@
+.product-filters-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 auto 2.5rem;
+  padding: 0 1.5rem;
+}
+
+.product-filters {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+.product-filter-control {
+  min-width: 0;
+}
+
+.product-filter-search {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 560px;
+}
+
+.product-filter-select-wrap {
+  flex: 0 0 auto;
+}
+
+.product-filter-input,
+.product-filter-select {
+  height: 56px;
+  border: 1px solid #d8c4ad;
+  border-radius: 999px;
+  outline: none;
+  background: #fffdf9;
+  box-shadow: 0 8px 20px rgba(90, 55, 35, 0.06);
+  color: #4b4038;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-filter-input {
+  width: 100%;
+  padding: 0 1.2rem;
+}
+
+.product-filter-select {
+  width: auto;
+  min-width: 0;
+  padding: 0 3rem 0 1.2rem;
+  cursor: pointer;
+  appearance: none;
+  white-space: nowrap;
+  background-image: linear-gradient(45deg, transparent 50%, #8a6b58 50%),
+    linear-gradient(135deg, #8a6b58 50%, transparent 50%);
+  background-position:
+    calc(100% - 22px) calc(50% - 3px),
+    calc(100% - 16px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.product-filter-select-wrap:first-of-type .product-filter-select {
+  width: 250px;
+}
+
+.product-filter-select-wrap:last-of-type .product-filter-select {
+  width: 180px;
+}
+
+.product-filter-input::placeholder {
+  color: #9b8777;
+}
+
+.product-filter-input:focus,
+.product-filter-select:focus {
+  border-color: #b88a69;
+  box-shadow: 0 10px 24px rgba(90, 55, 35, 0.1);
+}
+
+.product-filter-clear {
+  border: none;
+  background: transparent;
+  color: #8b5e47;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.product-filter-clear:hover {
+  color: #6f4634;
+}
+
+@media (max-width: 768px) {
+  .product-filters-wrap {
+    padding: 0 1rem;
+  }
+
+  .product-filters {
+    flex-wrap: wrap;
+  }
+
+  .product-filter-search,
+  .product-filter-select-wrap {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .product-filter-select-wrap:first-of-type .product-filter-select,
+  .product-filter-select-wrap:last-of-type .product-filter-select,
+  .product-filter-select {
+    width: 100%;
+  }
+
+  .product-filter-input,
+  .product-filter-select {
+    font-size: 0.95rem;
+    height: 54px;
+  }
+}

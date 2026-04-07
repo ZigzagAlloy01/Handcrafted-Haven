@@ -148,8 +148,7 @@ export default function Navbar() {
     "A"
   ).toUpperCase();
 
-  const profileHref =
-    profile?.role === "artisan" ? `/artisans/${profile.id}` : "/account";
+  const profileHref = "/account";
 
   return (
     <header className="navbar">
