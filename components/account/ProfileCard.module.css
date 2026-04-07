@@ -92,3 +92,12 @@
 .actions a {
   text-align: center;
 }
+
+.storeEdit {
+  background-color: #8b6b4a;
+  color: #fff;
+}
+
+.storeEdit:hover {
+  background-color: #76583d;
+}

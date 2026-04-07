@@ -150,7 +150,7 @@ export default function ManageFrontstore({ artisanId, products: initialProducts 
           )}
           <button
             className="btn btn-secondary"
-            onClick={() => router.push(ROUTES.ARTISAN_PROFILE(artisanId))}
+            onClick={() => router.push(ROUTES.ACCOUNT)}
             disabled={isPending}
           >
             Back to Profile
