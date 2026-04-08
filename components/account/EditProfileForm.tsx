@@ -1,10 +1,12 @@
 'use client'
 
-import { useTransition, useState } from 'react'
+import { useTransition, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from '@/types/user'
 import { ROUTES } from '@/constants/routes'
 import { updateProfile } from '@/lib/actions/users'
+import { createClient } from '@/lib/db/supabase'
+import type { AvatarOption } from '@/types/avatar'
 import styles from './EditProfileForm.module.css'
 
 export default function EditProfileForm({ user }: { user: User }) {
@@ -13,7 +15,23 @@ export default function EditProfileForm({ user }: { user: User }) {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
+  const [avatars, setAvatars] = useState<AvatarOption[]>([])
+  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(
+    user.avatar_url ?? null
+  )
+
   const isArtisan = user.role === 'artisan'
+
+  // Fetch avatars
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      const supabase = createClient()
+      const { data } = await supabase.from('avatar_options').select('*')
+      if (data) setAvatars(data)
+    }
+
+    fetchAvatars()
+  }, [])
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -39,6 +57,8 @@ export default function EditProfileForm({ user }: { user: User }) {
         <div className={styles.wrapper}>
           <div className={`card ${styles.card}`}>
             <form onSubmit={handleSubmit} className={styles.form}>
+              
+              {/* First Name */}
               <div className={styles.field}>
                 <label htmlFor="first_name" className={styles.label}>
                   First Name
@@ -53,6 +73,7 @@ export default function EditProfileForm({ user }: { user: User }) {
                 />
               </div>
 
+              {/* Last Name */}
               <div className={styles.field}>
                 <label htmlFor="last_name" className={styles.label}>
                   Last Name
@@ -67,6 +88,7 @@ export default function EditProfileForm({ user }: { user: User }) {
                 />
               </div>
 
+              {/* Address */}
               <div className={styles.field}>
                 <label htmlFor="address" className={styles.label}>
                   Address
@@ -81,20 +103,37 @@ export default function EditProfileForm({ user }: { user: User }) {
                 />
               </div>
 
-              <div className={styles.field}>
-                <label htmlFor="avatar_url" className={styles.label}>
-                  Avatar URL
-                </label>
-                <input
-                  id="avatar_url"
-                  name="avatar_url"
-                  type="url"
-                  defaultValue={user.avatar_url ?? ''}
-                  placeholder="https://example.com/avatar.jpg"
-                  className={styles.input}
-                />
-              </div>
+              {/* Avatar Picker */}
+              {avatars.length > 0 && (
+                <div className={styles.field}>
+                  <label className={styles.label}>Choose Avatar</label>
 
+                  <div className={styles.avatarGrid}>
+                    {avatars.map((avatar) => (
+                      <img
+                        key={avatar.id}
+                        src={avatar.url}
+                        alt={avatar.label ?? 'Avatar'}
+                        className={`${styles.avatarOption} ${
+                          selectedAvatar === avatar.url
+                            ? styles.avatarSelected
+                            : ''
+                        }`}
+                        onClick={() => setSelectedAvatar(avatar.url)}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Hidden input to submit value */}
+                  <input
+                    type="hidden"
+                    name="avatar_url"
+                    value={selectedAvatar ?? ''}
+                  />
+                </div>
+              )}
+
+              {/* Artisan Fields */}
               {isArtisan && (
                 <>
                   <div className={styles.field}>
@@ -127,13 +166,20 @@ export default function EditProfileForm({ user }: { user: User }) {
                 </>
               )}
 
+              {/* Messages */}
               {error && <p className={styles.error}>{error}</p>}
               {success && <p className={styles.success}>{success}</p>}
 
+              {/* Actions */}
               <div className={styles.actions}>
-                <button type="submit" className="btn btn-primary" disabled={isPending}>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={isPending}
+                >
                   {isPending ? 'Saving...' : 'Save Changes'}
                 </button>
+
                 <button
                   type="button"
                   className="btn btn-light"
@@ -143,6 +189,7 @@ export default function EditProfileForm({ user }: { user: User }) {
                   Cancel
                 </button>
               </div>
+
             </form>
           </div>
         </div>
