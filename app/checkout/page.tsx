@@ -14,7 +14,6 @@ interface CartItem extends Product {
 export default function CheckoutPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Shipping state
   const [shipping, setShipping] = useState({
     fullName: "",
     address: "",
@@ -23,7 +22,6 @@ export default function CheckoutPage() {
     zip: "",
   });
 
-  // Billing / payment state
   const [billing, setBilling] = useState({
     cardName: "",
     cardNumber: "",
@@ -31,9 +29,6 @@ export default function CheckoutPage() {
     cvv: "",
     address: "",
   });
-
-  // Toast state
-  const [showToast, setShowToast] = useState(false);
 
   // Load cart
   useEffect(() => {
@@ -51,54 +46,60 @@ export default function CheckoutPage() {
     0
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const order = {
-      shipping,
-      billing,
-      items: cart,
-      total,
-      createdAt: new Date().toISOString(),
-    };
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: cart,
+          total,
+        }),
+      });
 
-    console.log("Order submitted:", order);
+      const data = await res.json();
 
-    // Clear cart
-    localStorage.removeItem("cart");
-    setCart([]);
+      if (!data.success) throw new Error("Order failed");
 
-    // Clear form
-    setShipping({
-      fullName: "",
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
-    });
+      const orderId = data.order.id;
 
-    setBilling({
-      cardName: "",
-      cardNumber: "",
-      expiry: "",
-      cvv: "",
-      address: "",
-    });
+      // Clear cart
+      localStorage.removeItem("cart");
+      setCart([]);
 
-    // Show toast
-    setShowToast(true);
+      // Clear form
+      setShipping({
+        fullName: "",
+        address: "",
+        city: "",
+        state: "",
+        zip: "",
+      });
 
-    // Redirect after 2 seconds
-    setTimeout(() => {
-      window.location.href = "/";
-    }, 2000);
+      setBilling({
+        cardName: "",
+        cardNumber: "",
+        expiry: "",
+        cvv: "",
+        address: "",
+      });
+
+      // Redirect to confirmation page
+      window.location.href = `/checkout/confirmation/${orderId}`;
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong placing your order.");
+    }
   };
 
   return (
     <main className="checkout-page">
       <h1 className="checkout-title">Checkout</h1>
 
-      {/* CART SUMMARY */}
       <section className="checkout-summary">
         <h2>Your Items</h2>
 
@@ -125,7 +126,6 @@ export default function CheckoutPage() {
         )}
       </section>
 
-      {/* FORM */}
       <form className="checkout-form" onSubmit={handleSubmit}>
         <h2>Shipping Information</h2>
 
@@ -239,13 +239,6 @@ export default function CheckoutPage() {
 
         <Button type="submit">Place Order</Button>
       </form>
-
-      {/* TOAST */}
-      {showToast && (
-        <div className="checkout-toast">
-          ✅ Order placed successfully!
-        </div>
-      )}
     </main>
   );
 }

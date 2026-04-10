@@ -2,6 +2,7 @@ import { createBrowserSupabaseClient } from '@/lib/db/supabase-browser';
 
 export type Product = {
   id: string;
+  seller_id: string;
   name: string;
   description: string;
   price: number;
@@ -35,6 +36,7 @@ export async function getProducts(): Promise<Product[]> {
 
     return {
       id: item.id,
+      seller_id: item.seller_id,
       name: item.name,
       description: item.description,
       price: item.price,
