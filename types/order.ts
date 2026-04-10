@@ -5,7 +5,7 @@ export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancel
 export type Order = {
   id: string;
   user_id: string;
-  items: CartItem[];
+  items: CartItem[] | any[];
   total: number;
   status: OrderStatus;
   created_at: string;

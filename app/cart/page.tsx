@@ -3,26 +3,28 @@
 import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/button";
 import { Product } from "@/types/product";
-
-import Navbar from "@/components/layout/navbar/navbar";
-import Footer from "@/components/layout/footer";
 import "./cart.css";
 
-interface CartItem extends Product {
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  image_url?: string;
+  seller_id: string;
   quantity: number;
 }
 
 export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Load cart safely
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("cart") || "[]");
 
-      const normalized = stored.map((item: CartItem) => ({
+      const normalized: CartItem[] = stored.map((item: any) => ({
         ...item,
         quantity: item.quantity ?? 1,
+        seller_id: item.seller_id ?? "unknown",
       }));
 
       setCart(normalized);
@@ -59,10 +61,7 @@ export default function CartPage() {
   const decreaseQty = (id: string) => {
     const updated = cart.map((item) =>
       item.id === id
-        ? {
-            ...item,
-            quantity: Math.max(1, item.quantity - 1),
-          }
+        ? { ...item, quantity: Math.max(1, item.quantity - 1) }
         : item
     );
     saveCart(updated);
@@ -128,9 +127,7 @@ export default function CartPage() {
       </h2>
 
       <div className="cart-checkout">
-        <Button
-          onClick={() => (window.location.href = "/checkout")}
-        >
+        <Button onClick={() => (window.location.href = "/checkout")}>
           Go to Checkout
         </Button>
       </div>

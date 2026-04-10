@@ -54,6 +54,10 @@ export default function ProfileCard({ user }: { user: User }) {
                 Edit Profile
               </Link>
 
+              <Link href="/orders" className="btn btn-primary">
+                My Orders
+              </Link>
+
               {user.role === 'artisan' && (
                 <>
                   <Link

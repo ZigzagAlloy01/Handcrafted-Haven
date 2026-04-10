@@ -30,6 +30,7 @@ export default function AddToCartButton({ product }: { product: any }) {
           name: product.name,
           price: product.price,
           image_url: product.images?.[0],
+          seller_id: product.seller_id,
           quantity: 1,
         },
       ];
@@ -39,9 +40,7 @@ export default function AddToCartButton({ product }: { product: any }) {
     window.dispatchEvent(new Event("cartUpdated"));
     setAdded(true);
 
-    setTimeout(() => {
-      setAdded(false);
-    }, 1500);
+    setTimeout(() => setAdded(false), 1500);
   };
 
   if (loadingUser || isAdmin) {
