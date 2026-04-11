@@ -49,6 +49,7 @@ export default function Footer() {
   const { profile, loadingUser } = useNavbarAuth(() => {});
   const isAdmin = profile?.role === "admin";
   const isAdminRoute = pathname.startsWith("/admin");
+  const isLoggedIn = !!profile;
 
   if (loadingUser) {
     return isAdminRoute ? <MinimalFooter /> : <FooterSkeleton />;
@@ -84,7 +85,9 @@ export default function Footer() {
             <ul>
               <li><Link href="/contact">Contact</Link></li>
               <li><Link href="/faq">FAQ</Link></li>
-              <li><Link href="/register">Sign Up</Link></li>
+              {!isLoggedIn && (
+                <li><Link href="/register">Sign Up</Link></li>
+              )}
             </ul>
           </div>
         </div>

@@ -25,6 +25,8 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = request.nextUrl.pathname;
+
   if (!user) {
     return response;
   }
@@ -35,9 +37,23 @@ export async function middleware(request: NextRequest) {
     .eq("id", user.id)
     .single();
 
-  const pathname = request.nextUrl.pathname;
   const isBlockedAdminRoute =
     pathname.startsWith("/cart") || pathname.startsWith("/contact");
+
+  const isRegisterPage = pathname.startsWith("/register");
+  const isLoginPage = pathname.startsWith("/login");
+
+  if (isRegisterPage) {
+    return NextResponse.redirect(new URL("/account", request.url));
+  }
+
+  if (isLoginPage) {
+    if (profile?.role === "admin") {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    }
+
+    return NextResponse.redirect(new URL("/account", request.url));
+  }
 
   if (profile?.role === "admin" && isBlockedAdminRoute) {
     return NextResponse.redirect(new URL("/admin", request.url));
@@ -47,5 +63,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/cart/:path*", "/contact/:path*"],
+  matcher: ["/cart/:path*", "/contact/:path*", "/register", "/login"],
 };
