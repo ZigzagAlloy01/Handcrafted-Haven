@@ -1,76 +1,94 @@
 import { getProducts } from "@/lib/shop/ListProducts";
+import { getCurrentUser } from "@/lib/data/users";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import AddToCartButton from "@/components/shop/AddToCartButton";
 import ReviewSection from "@/components/reviews/ReviewSection";
-import '../shop.css';
+import "./product-detail.css";
+
 type Props = {
   params: Promise<{ id: string }>;
 };
 
 export default async function ProductDetail({ params }: Props) {
   const { id } = await params;
-  const products = await getProducts();
+
+  const [products, currentUser] = await Promise.all([
+    getProducts(),
+    getCurrentUser(),
+  ]);
+
   const product = products.find((p) => p.id === id);
 
   if (!product) return notFound();
 
+  const isAdmin = currentUser?.role === "admin";
+  const isOwnProduct = currentUser?.id === product.seller_id;
+
   return (
-    <main className="container py-12">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        
-        <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-center aspect-square relative overflow-hidden border border-[#E5DEC9]">
+    <main className="product-detail-page container">
+      <header className="product-detail-header">
+        <h1 className="product-detail-title">{product.name}</h1>
+      </header>
+
+      <section className="product-detail-layout">
+        <div className="product-detail-image-card">
           {product.images?.[0] ? (
             <Image
               src={product.images[0]}
               alt={product.name}
               fill
-              className="object-contain p-4 transition-all hover:scale-105"
+              className="product-detail-image"
               priority
             />
           ) : (
-            <div className="text-gray-400 flex flex-col items-center">
-              <span className="text-4xl">🖼️</span>
+            <div className="product-detail-no-image">
+              <span className="product-detail-no-image-icon">🖼️</span>
               <p>No image available</p>
             </div>
           )}
         </div>
 
-        <div className="flex flex-col">
-
-          <h1 className="text-4xl md:text-5xl font-bold text-[#3D4127] font-[var(--font-dancing-script)] mb-4">
-            {product.name}
-          </h1>
-
-          <div className="flex items-center gap-4 mb-6">
-            <span className="text-3xl font-bold text-[#C76B4F]">
+        <div className="product-detail-info">
+          <div className="product-detail-price-row">
+            <span className="product-detail-price">
               ${Number(product.price).toFixed(2)}
             </span>
-            <span className="bg-[#3D4127]/10 text-[#3D4127] px-3 py-1 rounded-full text-sm font-medium">
-              {product.rating ? `⭐ ${product.rating}` : 'No reviews yet'}
+
+            <span className="product-detail-rating">
+              {product.rating ? `⭐ ${product.rating}` : "No reviews yet"}
             </span>
           </div>
 
-          <div className="prose prose-stone mb-8">
-            <p className="text-[#6A4E42] text-lg leading-relaxed">
-              {product.description}
-            </p>
+          <div className="product-detail-description">
+            <p>{product.description}</p>
           </div>
 
-          <div className="mt-auto space-y-4">
-            <AddToCartButton product={product} />
-            <Link href="/shop" className="product-button btn btn-secondary w-full text-center">
-             ← Back to shop
-          </Link>
-            
-            <p className="text-xs text-[#6A4E42]/60 text-center md:text-left">
+          <div className="product-detail-actions">
+            <AddToCartButton
+              product={product}
+              canAddToCart={!isAdmin && !isOwnProduct}
+            />
+
+            <Link
+              href="/shop"
+              className="product-button btn btn-secondary w-full text-center"
+            >
+              ← Back to shop
+            </Link>
+
+            <p className="product-detail-note">
               Secure checkout • Handcrafted quality guaranteed
             </p>
           </div>
         </div>
-      </div>
-      <ReviewSection productId={id} />
+      </section>
+
+      <ReviewSection
+        productId={id}
+        sellerId={product.seller_id}
+      />
     </main>
   );
 }

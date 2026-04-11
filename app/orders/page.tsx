@@ -3,15 +3,16 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/db/supabase";
 import { Order } from "@/types/order";
+import "./orders.css";
 
 export default function OrdersPage() {
-  const supabase = createClient();
-
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [sellerMap, setSellerMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
+    const supabase = createClient();
+
     const fetchOrders = async () => {
       setLoading(true);
 
@@ -24,7 +25,6 @@ export default function OrdersPage() {
         setLoading(false);
         return;
       }
-
 
       const { data: ordersData, error: ordersError } = await supabase
         .from("orders")
@@ -66,103 +66,80 @@ export default function OrdersPage() {
   }, []);
 
   if (loading) {
-    return <p style={{ padding: "2rem" }}>Loading orders...</p>;
+    return <p className="orders-loading">Loading orders...</p>;
   }
 
   if (!orders.length) {
-    return <p style={{ padding: "2rem" }}>No orders yet.</p>;
+    return <p className="orders-empty">No orders yet.</p>;
   }
 
   return (
-    <main style={{ padding: "2rem" }}>
-      <h1>My Orders</h1>
+    <main className="orders-page">
+      <div className="orders-container">
+        <h1 className="orders-title">My Orders</h1>
 
-      {orders.map((order) => {
-        const grouped = (order.items || []).reduce(
-          (acc: Record<string, any[]>, item: any) => {
-            const key = item.seller_id ?? "unknown";
+        {orders.map((order) => {
+          const grouped = (order.items || []).reduce(
+            (acc: Record<string, any[]>, item: any) => {
+              const key = item.seller_id ?? "unknown";
+              if (!acc[key]) acc[key] = [];
+              acc[key].push(item);
+              return acc;
+            },
+            {}
+          );
 
-            if (!acc[key]) acc[key] = [];
-            acc[key].push(item);
-
-            return acc;
-          },
-          {}
-        );
-
-        return (
-          <div
-            key={order.id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "1rem",
-              marginBottom: "1rem",
-              borderRadius: "8px",
-            }}
-          >
-            <p>
-              <strong>Order:</strong> {order.id}
-            </p>
-
-            <p>
-              <strong>Status:</strong> {order.status}
-            </p>
-
-            <p>
-              <strong>Total:</strong> ${order.total.toFixed(2)}
-            </p>
-
-            <p>
-              <strong>Date:</strong>{" "}
-              {new Date(order.created_at).toLocaleString()}
-            </p>
-
-            <details>
-              <summary>Items by Seller</summary>
-
-              <div style={{ marginTop: "0.75rem" }}>
-                {Object.entries(grouped).map(([sellerId, items]: any) => (
-                  <div key={sellerId} style={{ marginBottom: "1rem" }}>
-                    <h4>
-                      Seller: {sellerMap[sellerId] || "Unknown Artisan"}
-                    </h4>
-
-                    {items.map((item: any, idx: number) => (
-                      <div
-                        key={`${item.id || item.product_id}-${idx}`}
-                        style={{
-                          display: "flex",
-                          gap: "10px",
-                          alignItems: "center",
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        <img
-                          src={item.image_url || "/placeholder.jpg"}
-                          alt={item.name}
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            objectFit: "cover",
-                            borderRadius: "6px",
-                          }}
-                        />
-
-                        <div>
-                          <p style={{ margin: 0 }}>{item.name}</p>
-                          <p style={{ margin: 0, fontSize: "0.8rem" }}>
-                            {item.quantity} × ${item.price.toFixed(2)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ))}
+          return (
+            <article key={order.id} className="order-card">
+              <div className="order-meta">
+                <p><strong>Order:</strong> {order.id}</p>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  <span className="order-status">{order.status}</span>
+                </p>
+                <p><strong>Total:</strong> ${Number(order.total).toFixed(2)}</p>
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(order.created_at).toLocaleString()}
+                </p>
               </div>
-            </details>
-          </div>
-        );
-      })}
+
+              <details className="order-details">
+                <summary>Items by Seller</summary>
+
+                <div className="order-sellers">
+                  {Object.entries(grouped).map(([sellerId, items]: any) => (
+                    <div key={sellerId} className="order-seller-group">
+                      <h4 className="order-seller-name">
+                        Seller: {sellerMap[sellerId] || "Unknown Artisan"}
+                      </h4>
+
+                      {items.map((item: any, idx: number) => (
+                        <div
+                          key={`${item.id || item.product_id}-${idx}`}
+                          className="order-item"
+                        >
+                          <img
+                            src={item.image_url || "/placeholder.jpg"}
+                            alt={item.name}
+                            className="order-item-image"
+                          />
+                          <div className="order-item-info">
+                            <p className="order-item-name">{item.name}</p>
+                            <p className="order-item-meta">
+                              {item.quantity} × ${Number(item.price).toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </details>
+            </article>
+          );
+        })}
+      </div>
     </main>
   );
 }

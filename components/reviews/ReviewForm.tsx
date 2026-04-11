@@ -2,29 +2,18 @@
 
 import { useState, useRef } from 'react';
 import { createReview } from '@/lib/actions/reviews';
-import { useNavbarAuth } from '@/lib/navbar/use-navbar-auth';
+import "@/app/global.css";
 
 type Props = {
   productId: string;
 };
 
 export default function ReviewForm({ productId }: Props) {
-  const { profile, loadingUser } = useNavbarAuth();
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
-
-  // Do not render anything until auth is fully loaded
-  if (loadingUser) {
-    return null;
-  }
-
-  // Hide for admin
-  if (profile?.role === 'admin') {
-    return null;
-  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -55,7 +44,10 @@ export default function ReviewForm({ productId }: Props) {
     <form ref={formRef} onSubmit={handleSubmit} className="mt-6 space-y-4">
       <h3 className="text-lg font-semibold text-[#3D4127]">Leave a Review</h3>
 
-      <div className="flex items-center gap-1 pb-4">
+      <div
+        className="flex items-center gap-1 pb-4"
+        style={{ marginBottom: "20px", gap: "5px" }}
+      >
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
@@ -65,7 +57,7 @@ export default function ReviewForm({ productId }: Props) {
             onMouseLeave={() => setHovered(0)}
             className="text-2xl leading-none cursor-pointer transition-transform hover:scale-110"
           >
-            <span className={(hovered || rating) >= star ? 'text-[#C76B4F]' : 'text-[#E5DEC9]'}>
+            <span className={(hovered || rating) >= star ? "text-[#C76B4F]" : "text-[#E5DEC9]"}>
               ★
             </span>
           </button>
@@ -80,6 +72,7 @@ export default function ReviewForm({ productId }: Props) {
         placeholder="Write your review..."
         rows={4}
         className="w-full border border-[#E5DEC9] rounded-xl px-4 py-3 text-sm text-[#3D4127] bg-white placeholder-[#6A4E42]/40 resize-none focus:outline-none focus:ring-2 focus:ring-[#C76B4F]/30"
+        style={{ padding: "20px" }}
       />
 
       {error && <p className="text-sm text-[#C76B4F]">{error}</p>}

@@ -1,15 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useNavbarAuth } from "@/lib/navbar/use-navbar-auth";
 import "@/app/shop/shop.css";
 
-export default function AddToCartButton({ product }: { product: any }) {
+type Props = {
+  product: any;
+  canAddToCart: boolean;
+};
+
+export default function AddToCartButton({ product, canAddToCart }: Props) {
   const [added, setAdded] = useState(false);
-  const { profile, loadingUser } = useNavbarAuth(() => {});
-  const isAdmin = profile?.role === "admin";
 
   const handleAdd = () => {
+    if (!canAddToCart) return;
+
     const stored = JSON.parse(localStorage.getItem("cart") || "[]");
 
     const existing = stored.find((item: any) => item.id === product.id);
@@ -43,7 +47,7 @@ export default function AddToCartButton({ product }: { product: any }) {
     setTimeout(() => setAdded(false), 1500);
   };
 
-  if (loadingUser || isAdmin) {
+  if (!canAddToCart) {
     return null;
   }
 
