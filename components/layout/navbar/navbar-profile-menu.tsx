@@ -36,7 +36,7 @@ export default function NavbarProfileMenu({
 
   const isAdmin = profile.role === "admin";
   const profileHref = isAdmin ? "/admin" : "/account";
-  const profileLabel = isAdmin ? "Admin Panel" : "View Profile";
+  const profileLabel = isAdmin ? "Admin Panel" : "View Account";
 
   return (
     <div className={`navbar-profile-wrapper ${className}`}>

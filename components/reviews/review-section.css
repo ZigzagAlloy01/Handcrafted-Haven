@@ -1,0 +1,141 @@
+.review-section-inner {
+  border-top: 1px solid #e5dec9;
+  padding-top: 2.5rem;
+}
+
+.review-section-title {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.review-section-count {
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(106, 78, 66, 0.6);
+}
+
+.review-empty {
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+  color: rgba(106, 78, 66, 0.7);
+}
+
+.review-list {
+  list-style: none;
+  margin: 0 0 2rem;
+  padding: 0;
+}
+
+.review-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee3d6;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.review-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.review-avatar-wrap {
+  flex-shrink: 0;
+}
+
+.review-avatar-image,
+.review-avatar-fallback {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+}
+
+.review-avatar-image {
+  object-fit: cover;
+}
+
+.review-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(61, 65, 39, 0.1);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.review-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.review-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.review-user {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.review-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.review-stars {
+  display: inline-flex;
+  gap: 0.1rem;
+}
+
+.review-date-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.review-date {
+  font-size: 0.8rem;
+  color: rgba(106, 78, 66, 0.6);
+  white-space: nowrap;
+}
+
+.review-text {
+  margin-top: 0.45rem;
+  margin-bottom: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #4b4038;
+}
+
+.review-login-box {
+  border: 1px solid #e5dec9;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  background: #fffaf5;
+}
+
+.review-login-text {
+  margin-bottom: 0;
+  font-size: 0.95rem;
+  color: #6a4e42;
+}
+
+.review-login-link {
+  color: #c76b4f;
+  font-weight: 600;
+}
+
+.review-login-link:hover,
+.review-login-link:focus {
+  text-decoration: underline;
+}

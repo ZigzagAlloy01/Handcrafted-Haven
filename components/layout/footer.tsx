@@ -1,21 +1,61 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useNavbarAuth } from "@/lib/navbar/use-navbar-auth";
 import "./footer.css";
 
+function FooterSkeleton() {
+  return (
+    <footer className="footer footer-skeleton">
+      <div className="footer-container container">
+        <div className="footer-skeleton-block footer-skeleton-brand" />
+        <div className="footer-skeleton-links">
+          <div className="footer-skeleton-column">
+            <div className="footer-skeleton-line short" />
+            <div className="footer-skeleton-line" />
+            <div className="footer-skeleton-line" />
+            <div className="footer-skeleton-line" />
+          </div>
+
+          <div className="footer-skeleton-column">
+            <div className="footer-skeleton-line short" />
+            <div className="footer-skeleton-line" />
+            <div className="footer-skeleton-line" />
+            <div className="footer-skeleton-line" />
+          </div>
+        </div>
+      </div>
+
+      <div className="footer-bottom">
+        <p>© 2026 Handcrafted Haven. All rights reserved.</p>
+      </div>
+    </footer>
+  );
+}
+
+function MinimalFooter() {
+  return (
+    <footer className="footer footer-minimal">
+      <div className="footer-bottom">
+        <p>© 2026 Handcrafted Haven. All rights reserved.</p>
+      </div>
+    </footer>
+  );
+}
+
 export default function Footer() {
+  const pathname = usePathname();
   const { profile, loadingUser } = useNavbarAuth(() => {});
   const isAdmin = profile?.role === "admin";
+  const isAdminRoute = pathname.startsWith("/admin");
 
-  if (loadingUser || isAdmin) {
-    return (
-      <footer className="footer footer-minimal">
-        <div className="footer-bottom">
-          <p>© 2026 Handcrafted Haven. All rights reserved.</p>
-        </div>
-      </footer>
-    );
+  if (loadingUser) {
+    return isAdminRoute ? <MinimalFooter /> : <FooterSkeleton />;
+  }
+
+  if (isAdmin) {
+    return <MinimalFooter />;
   }
 
   return (

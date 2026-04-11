@@ -10,6 +10,39 @@ import { useNavbarAuth } from "@/lib/navbar/use-navbar-auth";
 import NavbarProfileMenu from "./navbar-profile-menu";
 import "./navbar.css";
 
+function NavbarSkeleton() {
+  return (
+    <header className="navbar navbar-skeleton">
+      <div className="navbar-container container">
+        <Link href="/" className="navbar-logo" aria-label="Handcrafted Haven">
+          <Image
+            src="/handcrafted-haven-logo.png"
+            alt="Handcrafted Haven logo"
+            width={180}
+            height={50}
+            priority
+          />
+        </Link>
+
+        <div className="navbar-actions">
+          <div className="navbar-icon-skeleton skeleton-shimmer mobile-only" />
+          <div className="navbar-button-skeleton skeleton-shimmer mobile-only" />
+          <div className="navbar-toggle-skeleton skeleton-shimmer" />
+        </div>
+
+        <nav className="navbar-menu navbar-menu-skeleton">
+          <div className="navbar-link-skeleton skeleton-shimmer" />
+          <div className="navbar-link-skeleton skeleton-shimmer" />
+          <div className="navbar-link-skeleton skeleton-shimmer" />
+          <div className="navbar-link-skeleton skeleton-shimmer" />
+          <div className="navbar-icon-skeleton skeleton-shimmer desktop-only" />
+          <div className="navbar-button-skeleton skeleton-shimmer desktop-only" />
+        </nav>
+      </div>
+    </header>
+  );
+}
+
 export default function Navbar() {
   const pathname = usePathname();
 
@@ -54,11 +87,13 @@ export default function Navbar() {
     };
   }, []);
 
+  if (loadingUser) {
+    return <NavbarSkeleton />;
+  }
+
   const isAdmin = profile?.role === "admin";
 
-  const visibleNavLinks = loadingUser
-    ? []
-    : isAdmin
+  const visibleNavLinks = isAdmin
     ? NAV_LINKS.filter((link) => link.href !== "/contact")
     : NAV_LINKS;
 
@@ -76,7 +111,7 @@ export default function Navbar() {
         </Link>
 
         <div className="navbar-actions">
-          {!loadingUser && !isAdmin && (
+          {!isAdmin && (
             <Link
               href="/cart"
               className="navbar-cart mobile-cart"
@@ -90,7 +125,7 @@ export default function Navbar() {
             </Link>
           )}
 
-          {!loadingUser && profile ? (
+          {profile ? (
             <div ref={mobileProfileMenuRef}>
               <NavbarProfileMenu
                 profile={profile}
@@ -101,7 +136,7 @@ export default function Navbar() {
                 className="navbar-profile-wrapper-mobile"
               />
             </div>
-          ) : !loadingUser ? (
+          ) : (
             <Link
               href="/login"
               className="navbar-login navbar-login-mobile"
@@ -109,7 +144,7 @@ export default function Navbar() {
             >
               Login
             </Link>
-          ) : null}
+          )}
 
           <button
             className="navbar-toggle"
@@ -128,7 +163,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {!loadingUser && !isAdmin && (
+          {!isAdmin && (
             <Link
               href="/cart"
               className="navbar-cart desktop-cart"
@@ -142,7 +177,7 @@ export default function Navbar() {
             </Link>
           )}
 
-          {loadingUser ? null : profile ? (
+          {profile ? (
             <div ref={desktopProfileMenuRef}>
               <NavbarProfileMenu
                 profile={profile}

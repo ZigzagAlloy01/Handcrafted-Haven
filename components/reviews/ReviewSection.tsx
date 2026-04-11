@@ -4,17 +4,23 @@ import ReviewForm from './ReviewForm';
 import DeleteReviewButton from './DeleteReviewButton';
 import Image from 'next/image';
 import Link from 'next/link';
+import './review-section.css';
 
 type Props = {
   productId: string;
+  sellerId: string;
 };
 
 function StarDisplay({ rating }: { rating: number | null }) {
   if (!rating) return null;
+
   return (
-    <span className="flex gap-0.5">
+    <span className="review-stars">
       {[1, 2, 3, 4, 5].map((star) => (
-        <span key={star} className={star <= rating ? 'text-[#C76B4F]' : 'text-[#E5DEC9]'}>
+        <span
+          key={star}
+          className={star <= rating ? 'text-[#C76B4F]' : 'text-[#E5DEC9]'}
+        >
           ★
         </span>
       ))}
@@ -30,26 +36,28 @@ function formatDate(dateStr: string) {
   });
 }
 
-export default async function ReviewSection({ productId }: Props) {
+export default async function ReviewSection({ productId, sellerId }: Props) {
   const [reviews, currentUser] = await Promise.all([
     getReviewsByProduct(productId),
     getCurrentUser(),
   ]);
 
+  const isAdmin = currentUser?.role === 'admin';
+  const isOwnProduct = currentUser?.id === sellerId;
+  const canReview = !!currentUser && !isAdmin && !isOwnProduct;
+
   return (
-    <section className="mt-16 max-w-3xl mx-auto">
-      <div className="border-t border-[#E5DEC9] pt-10">
-        <h2 className="text-2xl font-bold text-[#3D4127] font-[var(--font-dancing-script)] mb-6">
+    <section className="review-section">
+      <div className="review-section-inner">
+        <h2 className="review-section-title">
           Customer Reviews{' '}
-          <span className="text-base font-normal text-[#6A4E42]/60">({reviews.length})</span>
+          <span className="review-section-count">({reviews.length})</span>
         </h2>
 
         {reviews.length === 0 ? (
-          <p className="text-[#6A4E42]/60 text-sm mb-8">
-            No reviews yet.
-          </p>
+          <p className="review-empty">No reviews yet.</p>
         ) : (
-          <ul className="space-y-5 mb-8">
+          <ul className="review-list">
             {reviews.map((review) => {
               const profile = review.profiles;
               const displayName =
@@ -61,41 +69,43 @@ export default async function ReviewSection({ productId }: Props) {
               const isOwner = currentUser?.id === review.user_id;
 
               return (
-                <li
-                  key={review.id}
-                  className="bg-white border border-[#E5DEC9] rounded-2xl p-5 shadow-sm"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0">
+                <li key={review.id} className="review-item">
+                  <div className="review-row">
+                    <div className="review-avatar-wrap">
                       {profile?.avatar_url ? (
                         <Image
                           src={profile.avatar_url}
                           alt={displayName}
                           width={40}
                           height={40}
-                          className="rounded-full object-cover w-10 h-10"
+                          className="review-avatar-image"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-[#3D4127]/10 flex items-center justify-center text-sm font-semibold text-[#3D4127]">
-                          {initials}
-                        </div>
+                        <div className="review-avatar-fallback">{initials}</div>
                       )}
                     </div>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-[#3D4127] text-sm">{displayName}</span>
+                    <div className="review-content">
+                      <div className="review-meta">
+                        <div className="review-user">
+                          <span className="review-name">{displayName}</span>
                           {review.rating && <StarDisplay rating={review.rating} />}
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs text-[#6A4E42]/50">{formatDate(review.created_at)}</span>
+
+                        <div className="review-date-actions">
+                          <span className="review-date">
+                            {formatDate(review.created_at)}
+                          </span>
                           {isOwner && (
-                            <DeleteReviewButton reviewId={review.id} productId={productId} />
+                            <DeleteReviewButton
+                              reviewId={review.id}
+                              productId={productId}
+                            />
                           )}
                         </div>
                       </div>
-                      <p className="mt-2 text-sm text-[#4b4038] leading-relaxed">{review.content}</p>
+
+                      <p className="review-text">{review.content}</p>
                     </div>
                   </div>
                 </li>
@@ -104,18 +114,18 @@ export default async function ReviewSection({ productId }: Props) {
           </ul>
         )}
 
-        {currentUser ? (
-          <ReviewForm productId={productId} />
-        ) : (
-          <div className="bg-[#FFFAF5] border border-[#E5DEC9] rounded-2xl p-5 text-center">
-            <p className="text-sm text-[#6A4E42]">
-              <Link href="/login" className="text-[#C76B4F] font-medium hover:underline">
+        {!currentUser ? (
+          <div className="review-login-box">
+            <p className="review-login-text">
+              <Link href="/login" className="review-login-link">
                 Log in
               </Link>{' '}
               to leave a review.
             </p>
           </div>
-        )}
+        ) : canReview ? (
+          <ReviewForm productId={productId} />
+        ) : null}
       </div>
     </section>
   );
