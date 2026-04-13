@@ -1,0 +1,60 @@
+.confirmation-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.confirmation-title {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.confirmation-card {
+  background-color: #f4efe6;
+  border: 1px solid #d8c3a5;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.confirmation-meta {
+  margin-bottom: 1.5rem;
+  color: #444;
+}
+
+.confirmation-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e5d6c3;
+}
+
+.confirmation-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.confirmation-info {
+  flex: 1;
+}
+
+.confirmation-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.confirmation-btn {
+  padding: 10px 16px;
+  border: 1px solid #d8c3a5;
+  background: white;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.confirmation-btn:hover {
+  background: #f0e6d8;
+}

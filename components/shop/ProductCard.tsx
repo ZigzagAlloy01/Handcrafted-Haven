@@ -1,49 +1,51 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Product } from "@/lib/shop/ListProducts";
+import "./product-card.css";
 
 export default function ProductCard({ product }: { product: Product }) {
+  const firstImage =
+    Array.isArray(product.images) &&
+    typeof product.images[0] === "string"
+      ? product.images[0].trim()
+      : "";
+
+  const imageSrc =
+    firstImage && firstImage !== "null" && firstImage !== "undefined"
+      ? firstImage
+      : "/placeholder-img.png";
+
   return (
-    <article className="card flex flex-col h-full hover:shadow-lg transition-shadow">
-      
-      <div className="relative h-64 w-full mb-4 overflow-hidden rounded-xl bg-white">
-        {product.images?.[0] ? (
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-gray-400 bg-gray-50">
-            <span>No Image Available</span>
-          </div>
-        )}
+    <article className="product-card">
+      <div className="product-card-image-wrap">
+        <img
+          src={imageSrc}
+          alt={product.name}
+          className="product-card-image"
+        />
       </div>
 
-      <div className="flex flex-col h-full">
-        <h3 className="text-xl font-semibold text-[#3D4127] font-[var(--font-dancing-script)] leading-tight">
-          {product.name}
-        </h3>
+      <div className="product-card-content">
+        <h3 className="product-card-title">{product.name}</h3>
 
-        <p className="text-sm text-[#6A4E42] mt-2 line-clamp-2 min-h-[40px]">
-          {product.description}
-        </p>
+        <p className="product-card-description">{product.description}</p>
 
-        <div className="mt-3 flex items-center justify-between">
-          <p className="text-[#C76B4F] font-bold text-lg">
+        <div className="product-card-meta">
+          <p className="product-card-price">
             ${Number(product.price).toFixed(2)}
           </p>
-          {product.rating && (
-            <span className="text-sm text-[#3D4127]/70 font-medium">
-              ⭐ {product.rating}
-            </span>
+
+          {product.rating ? (
+            <span className="product-card-rating">⭐ {product.rating}</span>
+          ) : (
+            <span className="product-card-rating">No reviews yet</span>
           )}
         </div>
 
-        <div className="mt-auto">
-          <Link href={`/shop/${product.id}`} className="btn btn-secondary w-full text-center">
+        <div className="product-card-actions">
+          <Link
+            href={`/shop/${product.id}`}
+            className="btn btn-secondary w-full text-center"
+          >
             View Details
           </Link>
         </div>

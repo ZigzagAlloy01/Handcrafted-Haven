@@ -2,7 +2,7 @@
 
 
 import { useState } from 'react';
-import Navbar from "@/components/layout/navbar";
+import Navbar from "@/components/layout/navbar/navbar";
 import Footer from "@/components/layout/footer";
 import './faq.css';
 
@@ -11,10 +11,6 @@ const faqs = [
   {
     question: "How do I create an account?",    
     answer: "Click on the 'Sign Up' button in the top right corner and fill out the registration form."
-  },
-  {
-    question: "How do I reset my password?",
-    answer: "Click on the 'Forgot Password' link on the login page and follow the instructions to reset your password."
   },
   {
     question: "How do I contact customer support?",
@@ -35,7 +31,6 @@ const faqs = [
 
 export default function FAQPage() {
     const[openIndex, setOpenIndex] = useState<number | null>(null);
-
 
       return (
     <div className="faq-container section">

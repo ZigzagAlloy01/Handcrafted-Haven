@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Navbar from "@/components/layout/navbar";
+import Navbar from "@/components/layout/navbar/navbar";
 import Footer from "@/components/layout/footer";
 import Button from "@/components/ui/button";
 import { Product } from "@/types/product";
@@ -13,10 +13,24 @@ interface CartItem extends Product {
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
 
-  // Load cart safely
+  const [shipping, setShipping] = useState({
+    fullName: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
+  const [billing, setBilling] = useState({
+    cardName: "",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+    address: "",
+  });
+
+  // Load cart
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -32,28 +46,60 @@ export default function CheckoutPage() {
     0
   );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const order = {
-      name,
-      address,
-      items: cart,
-      total,
-      createdAt: new Date().toISOString(),
-    };
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: cart,
+          total,
+        }),
+      });
 
-    console.log("Order submitted:", order);
+      const data = await res.json();
 
-    localStorage.removeItem("cart");
-    setCart([]);
+      if (!data.success) throw new Error("Order failed");
+
+      const orderId = data.order.id;
+
+      // Clear cart
+      localStorage.removeItem("cart");
+      setCart([]);
+
+      // Clear form
+      setShipping({
+        fullName: "",
+        address: "",
+        city: "",
+        state: "",
+        zip: "",
+      });
+
+      setBilling({
+        cardName: "",
+        cardNumber: "",
+        expiry: "",
+        cvv: "",
+        address: "",
+      });
+
+      // Redirect to confirmation page
+      window.location.href = `/checkout/confirmation/${orderId}`;
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong placing your order.");
+    }
   };
 
   return (
     <main className="checkout-page">
       <h1 className="checkout-title">Checkout</h1>
 
-      {/* CART SUMMARY */}
       <section className="checkout-summary">
         <h2>Your Items</h2>
 
@@ -62,7 +108,6 @@ export default function CheckoutPage() {
         ) : (
           cart.map((item) => (
             <div key={item.id} className="checkout-item">
-
               <img
                 src={item.image_url || "/placeholder.jpg"}
                 alt={item.name}
@@ -72,30 +117,119 @@ export default function CheckoutPage() {
               <div className="checkout-item-info">
                 <p>{item.name}</p>
                 <p>
-                  {item.quantity} × ${item.price.toFixed(2)}
+                  {item.quantity} × ${item.price.toFixed(2)} = $
+                  {(item.quantity * item.price).toFixed(2)}
                 </p>
               </div>
-
             </div>
           ))
         )}
       </section>
 
-      {/* FORM */}
       <form className="checkout-form" onSubmit={handleSubmit}>
+        <h2>Shipping Information</h2>
+
         <input
           type="text"
           placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={shipping.fullName}
+          onChange={(e) =>
+            setShipping({ ...shipping, fullName: e.target.value })
+          }
           required
         />
 
         <input
           type="text"
           placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          value={shipping.address}
+          onChange={(e) =>
+            setShipping({ ...shipping, address: e.target.value })
+          }
+          required
+        />
+
+        <input
+          type="text"
+          placeholder="City"
+          value={shipping.city}
+          onChange={(e) =>
+            setShipping({ ...shipping, city: e.target.value })
+          }
+          required
+        />
+
+        <input
+          type="text"
+          placeholder="State"
+          value={shipping.state}
+          onChange={(e) =>
+            setShipping({ ...shipping, state: e.target.value })
+          }
+          required
+        />
+
+        <input
+          type="text"
+          placeholder="ZIP Code"
+          value={shipping.zip}
+          onChange={(e) =>
+            setShipping({ ...shipping, zip: e.target.value })
+          }
+          required
+        />
+
+        <h2>Payment Information</h2>
+
+        <input
+          type="text"
+          placeholder="Name on Card"
+          value={billing.cardName}
+          onChange={(e) =>
+            setBilling({ ...billing, cardName: e.target.value })
+          }
+          required
+        />
+
+        <input
+          type="text"
+          placeholder="Card Number"
+          value={billing.cardNumber}
+          onChange={(e) =>
+            setBilling({ ...billing, cardNumber: e.target.value })
+          }
+          required
+        />
+
+        <div className="card-row">
+          <input
+            type="text"
+            placeholder="MM/YY"
+            value={billing.expiry}
+            onChange={(e) =>
+              setBilling({ ...billing, expiry: e.target.value })
+            }
+            required
+          />
+
+          <input
+            type="text"
+            placeholder="CVV"
+            value={billing.cvv}
+            onChange={(e) =>
+              setBilling({ ...billing, cvv: e.target.value })
+            }
+            required
+          />
+        </div>
+
+        <input
+          type="text"
+          placeholder="Billing Address"
+          value={billing.address}
+          onChange={(e) =>
+            setBilling({ ...billing, address: e.target.value })
+          }
           required
         />
 

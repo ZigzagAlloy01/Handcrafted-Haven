@@ -1,5 +1,4 @@
-import { Suspense } from 'react';
-import Search from '@/components/ui/search';
+import { createServerSupabaseClient } from '@/lib/db/supabase-server';
 import ProductCard from "@/components/shop/ProductCard";
 import ProductFilters from "@/components/shop/ProductFilters";
 import { getProducts } from "@/lib/shop/ListProducts";
@@ -65,8 +64,19 @@ function filterAndSort(products: any[], params: any) {
 
 export default async function ShopPage({ searchParams }: Props) {
   const params = await searchParams;
+  const supabase = await createServerSupabaseClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const products = await getProducts();
-  const items = filterAndSort(products, params);
+
+  const visibleProducts = user
+    ? products.filter((product) => product.seller_id !== user.id)
+    : products;
+
+  const items = filterAndSort(visibleProducts, params);
 
   return (
     <main className="shop-page">
@@ -76,7 +86,7 @@ export default async function ShopPage({ searchParams }: Props) {
             <p className="section-tag">Handcrafted Haven Shop</p>
             <h1>Shop Handmade Products</h1>
             <p className="shop-intro">
-              Discover unique creations crafted with passion. Every purchase supports 
+              Discover unique creations crafted with passion. Every purchase supports
               an artisan and brings a one-of-a-kind story into your home.
             </p>
           </div>
@@ -84,11 +94,9 @@ export default async function ShopPage({ searchParams }: Props) {
       </section>
 
       <div className="container mx-auto px-4 pt-12 pb-20">
-        
         <ProductFilters />
 
         {items.length > 0 ? (
-        
           <div className="my-16 products-grid">
             {items.map((product) => (
               <ProductCard key={product.id} product={product} />

@@ -68,3 +68,38 @@
   font-size: 0.9rem;
   margin: 0;
 }
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 16px;
+  border: 1px solid #d6ccc2;
+  border-radius: 12px;
+  background: #fff;
+  font: inherit;
+  resize: vertical;
+}
+
+.avatarGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.avatarOption {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid transparent;
+  object-fit: cover;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.avatarOption:hover {
+  transform: scale(1.05);
+}
+
+.avatarSelected {
+  border-color: var(--color-primary, #b45309);
+}

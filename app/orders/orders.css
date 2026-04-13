@@ -1,0 +1,146 @@
+.orders-page {
+  background: #f8f5f1;
+  min-height: 100vh;
+  padding: 2.5rem 0 4rem;
+}
+
+.orders-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.orders-title {
+  margin: 0 0 2rem;
+  font-size: 2.7rem;
+  line-height: 1.1;
+  color: #7a4b32;
+}
+
+.orders-loading,
+.orders-empty {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  color: #6a4e42;
+  font-size: 1.05rem;
+}
+
+.order-card {
+  background: #fdfaf6;
+  border: 1px solid #ddd2c5;
+  border-radius: 14px;
+  padding: 1.5rem 1.6rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.order-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 3rem;
+  margin-bottom: 1rem;
+}
+
+.order-meta p {
+  margin: 0;
+  color: #5f463a;
+  line-height: 1.6;
+}
+
+.order-meta strong {
+  color: #3d2b24;
+}
+
+.order-status {
+  color: #a64927;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.order-details {
+  margin-top: 1rem;
+  border-top: 1px solid #e9dfd3;
+  padding-top: 1rem;
+}
+
+.order-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #6a4e42;
+}
+
+.order-sellers {
+  margin-top: 1rem;
+}
+
+.order-seller-group {
+  padding: 1rem 0;
+  border-top: 1px solid #eee3d7;
+}
+
+.order-seller-group:first-child {
+  border-top: none;
+}
+
+.order-seller-name {
+  margin: 0 0 0.85rem;
+  font-size: 1rem;
+  color: #7a4b32;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.75rem 0;
+}
+
+.order-item + .order-item {
+  border-top: 1px solid #f1e8de;
+}
+
+.order-item-image {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #e2d7ca;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.order-item-name {
+  margin: 0 0 0.2rem;
+  color: #3d2b24;
+  font-weight: 600;
+}
+
+.order-item-meta {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #7b6458;
+}
+
+@media (max-width: 768px) {
+  .orders-page {
+    padding: 2rem 0 3rem;
+  }
+
+  .orders-container {
+    padding: 0 1rem;
+  }
+
+  .orders-title {
+    font-size: 2.2rem;
+  }
+
+  .order-meta {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .order-card {
+    padding: 1.1rem;
+  }
+}

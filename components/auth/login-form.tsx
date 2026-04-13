@@ -8,11 +8,34 @@ import styles from './login-form.module.css';
 
 export default function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  async function redirectByRole(userId: string) {
+    const supabase = createClient();
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', userId)
+      .single();
+
+    if (profileError || !profile) {
+      console.error('Error loading profile role:', profileError);
+      router.replace(ROUTES.ACCOUNT);
+      return;
+    }
+
+    if (profile.role === 'admin') {
+      router.replace('/admin');
+      return;
+    }
+
+    router.replace(ROUTES.ACCOUNT);
+  }
 
   useEffect(() => {
     async function checkExistingSession() {
@@ -25,7 +48,7 @@ export default function LoginForm() {
       console.log('Login page user:', user);
 
       if (user) {
-        router.replace(ROUTES.ACCOUNT);
+        await redirectByRole(user.id);
       }
     }
 
@@ -38,15 +61,39 @@ export default function LoginForm() {
     setLoading(true);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      setError(error.message);
+    let emailToUse = identifier.trim();
+
+    const isEmail = emailToUse.includes('@');
+
+    if (!isEmail) {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .ilike('username', emailToUse)
+        .single();
+
+      if (profileError || !profile?.email) {
+        setError('Invalid username or password.');
+        setLoading(false);
+        return;
+      }
+
+      emailToUse = profile.email;
+    }
+
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email: emailToUse,
+      password,
+    });
+
+    if (signInError || !data.user) {
+      setError('Invalid email/username or password.');
       setLoading(false);
       return;
     }
 
-    router.push(ROUTES.ACCOUNT);
+    await redirectByRole(data.user.id);
   }
 
   return (
@@ -58,10 +105,10 @@ export default function LoginForm() {
             <form onSubmit={handleSubmit} className={styles.form}>
               <input
                 className={styles.input}
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+                type="text"
+                placeholder="Email or username"
+                value={identifier}
+                onChange={e => setIdentifier(e.target.value)}
                 required
               />
 

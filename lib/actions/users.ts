@@ -6,29 +6,54 @@ import { ROUTES } from '@/constants/routes';
 
 export async function updateProfile(formData: FormData) {
   const supabase = await createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) throw new Error('Not authenticated');
 
-  const first_name = formData.get('first_name') as string;
-  const last_name = formData.get('last_name') as string;
-  const email = formData.get('email') as string;
-  const address = (formData.get('address') as string) || null;
-  const description = (formData.get('description') as string) || null;
-  const avatar_url = (formData.get('avatar_url') as string) || null;
-  const shop_name = (formData.get('shop_name') as string) || null;
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
 
-  if (email !== user.email) {
-    const { error: authError } = await supabase.auth.updateUser({ email });
-    if (authError) throw new Error(authError.message);
+  if (profileError || !profile) {
+    throw new Error('Profile not found.');
+  }
+
+  const first_name = (formData.get('first_name') as string)?.trim();
+  const last_name = (formData.get('last_name') as string)?.trim();
+  const address = ((formData.get('address') as string) || '').trim() || null;
+  const avatar_url = ((formData.get('avatar_url') as string) || '').trim() || null;
+
+  if (!first_name || !last_name) {
+    throw new Error('First name and last name are required.');
+  }
+
+  const updates: Record<string, string | null> = {
+    first_name,
+    last_name,
+    address,
+    avatar_url,
+  };
+
+  if (profile.role === 'artisan') {
+    const description = ((formData.get('description') as string) || '').trim() || null;
+    const shop_name = ((formData.get('shop_name') as string) || '').trim() || null;
+
+    updates.description = description;
+    updates.shop_name = shop_name;
   }
 
   const { error } = await supabase
     .from('profiles')
-    .update({ first_name, last_name, email, address, description, avatar_url, shop_name })
+    .update(updates)
     .eq('id', user.id);
 
   if (error) throw new Error(error.message);
 
   revalidatePath(ROUTES.ACCOUNT);
+  revalidatePath(ROUTES.ACCOUNT_EDIT ?? '/account/edit');
 }

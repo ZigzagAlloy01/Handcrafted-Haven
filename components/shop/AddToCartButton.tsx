@@ -1,40 +1,55 @@
 "use client";
 
 import { useState } from "react";
-import '@/app/shop/shop.css';
+import "@/app/shop/shop.css";
 
-export default function AddToCartButton({ product }: { product: any }) {
+type Props = {
+  product: any;
+  canAddToCart: boolean;
+};
+
+export default function AddToCartButton({ product, canAddToCart }: Props) {
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
-  const stored = JSON.parse(localStorage.getItem("cart") || "[]");
+    if (!canAddToCart) return;
 
-  const existing = stored.find((item: any) => item.id === product.id);
+    const stored = JSON.parse(localStorage.getItem("cart") || "[]");
 
-  let updated;
+    const existing = stored.find((item: any) => item.id === product.id);
 
-  if (existing) {
-    updated = stored.map((item: any) =>
-      item.id === product.id
-        ? { ...item, quantity: item.quantity + 1 }
-        : item
-        );
-      } else {
-        updated = [
-          ...stored,
-          {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image_url: product.images?.[0],
-            quantity: 1,
-          },
-        ];
-      }
+    let updated;
 
-      localStorage.setItem("cart", JSON.stringify(updated));
-      window.dispatchEvent(new Event("cartUpdated"));
-};
+    if (existing) {
+      updated = stored.map((item: any) =>
+        item.id === product.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+    } else {
+      updated = [
+        ...stored,
+        {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image_url: product.images?.[0],
+          seller_id: product.seller_id,
+          quantity: 1,
+        },
+      ];
+    }
+
+    localStorage.setItem("cart", JSON.stringify(updated));
+    window.dispatchEvent(new Event("cartUpdated"));
+    setAdded(true);
+
+    setTimeout(() => setAdded(false), 1500);
+  };
+
+  if (!canAddToCart) {
+    return null;
+  }
 
   return (
     <button
